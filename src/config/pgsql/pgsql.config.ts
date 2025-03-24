@@ -1,6 +1,6 @@
 import * as pg from 'pg';
 
-export type DatabaseType = 'primary' | 'secondary' | 'reporting' | 'analytics'; // เพิ่มประเภทได้ตามต้องการ
+export type DatabaseType = string;
 
 export interface DatabaseConfig {
   user: string;
@@ -14,34 +14,12 @@ export interface DatabaseConfig {
 
 // กำหนดค่า config สำหรับแต่ละฐานข้อมูล
 export const databaseConfigs: Record<DatabaseType, DatabaseConfig> = {
-  primary: {
-    user: process.env.PRIMARY_DB_USER || 'postgres',
-    host: process.env.PRIMARY_DB_HOST || '10.17.166.144',
-    database: process.env.PRIMARY_DB_NAME || 'iot',
-    password: process.env.PRIMARY_DB_PASSWORD || 'postgres',
-    port: parseInt(process.env.PRIMARY_DB_PORT || '5432'),
-  },
-  secondary: {
-    user: process.env.SECONDARY_DB_USER || 'postgres',
-    host: process.env.SECONDARY_DB_HOST || 'localhost',
-    database: process.env.SECONDARY_DB_NAME || 'postgres',
-    password: process.env.SECONDARY_DB_PASSWORD || 'postgres',
-    port: parseInt(process.env.SECONDARY_DB_PORT || '5432'),
-  },
-  // สามารถเพิ่มฐานข้อมูลอื่นๆ ได้ง่ายๆ ตรงนี้
-  reporting: {
-    user: process.env.REPORTING_DB_USER || 'postgres',
-    host: process.env.REPORTING_DB_HOST || 'localhost',
-    database: process.env.REPORTING_DB_NAME || 'reporting',
-    password: process.env.REPORTING_DB_PASSWORD || 'postgres',
-    port: parseInt(process.env.REPORTING_DB_PORT || '5432'),
-  },
-  analytics: {
-    user: process.env.ANALYTICS_DB_USER || 'postgres',
-    host: process.env.ANALYTICS_DB_HOST || 'localhost',
-    database: process.env.ANALYTICS_DB_NAME || 'analytics',
-    password: process.env.ANALYTICS_DB_PASSWORD || 'postgres',
-    port: parseInt(process.env.ANALYTICS_DB_PORT || '5432'),
+  pgsql_10_17_166_144_iot: {
+    user: process.env.POSTGRES_USER_NAME_10_17_166_144 || 'postgres',
+    host: process.env.POSTGRES_HOST_NAME_10_17_166_144 || '127.0.0.1',
+    password: process.env.POSTGRES_PASSWORD_10_17_166_144 || 'postgres',
+    port: parseInt(process.env.POSTGRES_PORTS_10_17_166_144 || '5432'),
+    database: 'iot',
   },
 };
 

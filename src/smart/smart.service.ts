@@ -10,11 +10,12 @@ export class SmartService {
     return this.queryService.findAll();
   }
 
-  findOne(id: number): ApiResponse<string> {
-    return this.queryService.findOne(id);
-  }
-
-  findmoreparams(id: number, name: string): ApiResponse<string> {
-    return this.queryService.findmoreparams(id, name);
+  insertCrudData(userData: {
+    username: string;
+    password: string;
+    email: string;
+    code: string;
+  }): Promise<ApiResponse<any>> {
+    return this.queryService.insertCrudData(userData);
   }
 }

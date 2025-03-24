@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { LoggerMiddleware } from './common/middleware/logger.middleware';
@@ -11,7 +12,14 @@ interface MiddlewareConsumer {
 }
 
 @Module({
-  imports: [SmartModule, DatabaseModule],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true, // Makes the config available throughout the application
+      envFilePath: '.env', // Specify the path to your .env file
+    }),
+    DatabaseModule,
+    SmartModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

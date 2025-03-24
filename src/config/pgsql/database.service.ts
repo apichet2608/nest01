@@ -1,19 +1,11 @@
-import {
-  Injectable,
-  Logger,
-  OnModuleInit,
-  OnModuleDestroy,
-} from '@nestjs/common';
+import { Injectable, Logger, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
 import * as pg from 'pg';
 import { DatabaseType, databaseConfigs, createPool } from './pgsql.config';
 
 @Injectable()
 export class DatabaseService implements OnModuleInit, OnModuleDestroy {
   private readonly logger = new Logger(DatabaseService.name);
-  private pools: Record<DatabaseType, pg.Pool> = {} as Record<
-    DatabaseType,
-    pg.Pool
-  >;
+  private pools: Record<DatabaseType, pg.Pool> = {} as Record<DatabaseType, pg.Pool>;
 
   constructor() {
     // สร้าง pool สำหรับทุกฐานข้อมูลที่กำหนดใน config
@@ -25,11 +17,8 @@ export class DatabaseService implements OnModuleInit, OnModuleDestroy {
   onModuleInit() {
     // เพิ่ม error handler สำหรับแต่ละ pool
     Object.entries(this.pools).forEach(([name, pool]) => {
-      pool.on('error', (err) => {
-        this.logger.error(
-          `Unexpected error on idle client in ${name} pool`,
-          err,
-        );
+      pool.on('error', err => {
+        this.logger.error(`Unexpected error on idle client in ${name} pool`, err);
       });
     });
 
@@ -62,10 +51,7 @@ export class DatabaseService implements OnModuleInit, OnModuleDestroy {
     }
   }
 
-  async transaction(
-    dbType: DatabaseType,
-    queryObjects: { text: string; params?: any[] }[],
-  ) {
+  async transaction(dbType: DatabaseType, queryObjects: { text: string; params?: any[] }[]) {
     let client;
     try {
       client = await this.pools[dbType].connect();
@@ -78,12 +64,9 @@ export class DatabaseService implements OnModuleInit, OnModuleDestroy {
       await client.query('COMMIT');
       return true;
     } catch (error) {
-      this.logger.error(
-        `Error executing transaction on ${dbType} database:`,
-        error,
-      );
+      this.logger.error(`Error executing transaction on ${dbType} database:`, error);
       if (client) {
-        await client.query('ROLLBACK').catch((rollbackError) => {
+        await client.query('ROLLBACK').catch(rollbackError => {
           this.logger.error('Error during rollback:', rollbackError);
         });
       }
@@ -117,11 +100,8 @@ export class DatabaseService implements OnModuleInit, OnModuleDestroy {
       this.pools[dbType] = createPool(databaseConfigs[dbType]);
 
       // เพิ่ม error handler
-      this.pools[dbType].on('error', (err) => {
-        this.logger.error(
-          `Unexpected error on idle client in ${dbType} pool`,
-          err,
-        );
+      this.pools[dbType].on('error', err => {
+        this.logger.error(`Unexpected error on idle client in ${dbType} pool`, err);
       });
 
       // ทดสอบการเชื่อมต่อ
